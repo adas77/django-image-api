@@ -1,0 +1,11 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.python
+    container_name: simple-drf-server
+    command: make r
+    ports:
+      - 8000:8000
+    volumes:
+      - ..:/app

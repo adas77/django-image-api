@@ -1,0 +1,28 @@
+[
+    {
+        "model": "api.tier",
+        "pk": 1,
+        "fields": {
+            "name": "Basic"
+        }
+    },
+    {
+        "model": "api.tier",
+        "pk": 2,
+        "fields": {
+            "name": "Premium",
+            "thumbnail_size_bigger": 400,
+            "presence_of_link_to_og_file": true
+        }
+    },
+    {
+        "model": "api.tier",
+        "pk": 3,
+        "fields": {
+            "name": "Enterprise",
+            "thumbnail_size_bigger": 400,
+            "presence_of_link_to_og_file": true,
+            "ability_to_create_exp_link": true
+        }
+    }
+]
