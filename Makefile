@@ -6,7 +6,7 @@ super_user_email = admin@example.com
 super_user_password = fF1aqm18
 
 manage = ${backend}/manage.py
-fixture_accounts = ${backend}/api/fixtures/default_accounts.json
+fixture_accounts = ${backend}/api/fixtures/default_users.json
 fixture_tier = ${backend}/api/fixtures/default_tiers.json
 
 run = $(py) $(manage)

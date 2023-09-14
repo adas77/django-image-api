@@ -1,6 +1,6 @@
 [
     {
-        "model": "auth.user",
+        "model": "api.user",
         "pk": 1,
         "fields": {
             "password": "pbkdf2_sha256$600000$1PQQlJyT5vF5nz09KVdiuR$w/w02SOZVMGNMiiirwXhRU6rC1mK/3HMyq2L2BOwSQw=",
@@ -14,11 +14,12 @@
             "is_active": true,
             "date_joined": "2023-09-14T15:46:09.131Z",
             "groups": [],
-            "user_permissions": []
+            "user_permissions": [],
+            "tier": 3
         }
     },
     {
-        "model": "auth.user",
+        "model": "api.user",
         "pk": 2,
         "fields": {
             "password": "pbkdf2_sha256$600000$6u5ag5c9L2TCqD1dYCD12q$NZgAg6Ossg0VOkbB2+b+5515EiDy/KruZFMA4msnE68=",
@@ -32,11 +33,12 @@
             "is_active": true,
             "date_joined": "2023-09-14T15:47:03.960Z",
             "groups": [],
-            "user_permissions": []
+            "user_permissions": [],
+            "tier": 1
         }
     },
     {
-        "model": "auth.user",
+        "model": "api.user",
         "pk": 3,
         "fields": {
             "password": "pbkdf2_sha256$600000$SOnAY27nAHku7RzPPRVMJP$Tz9LiX1zYFgBjVUBJb0kVGzAGiB9ehvhYqPTK4e5kxM=",
@@ -50,11 +52,12 @@
             "is_active": true,
             "date_joined": "2023-09-14T15:48:31.866Z",
             "groups": [],
-            "user_permissions": []
+            "user_permissions": [],
+            "tier": 2
         }
     },
     {
-        "model": "auth.user",
+        "model": "api.user",
         "pk": 4,
         "fields": {
             "password": "pbkdf2_sha256$600000$q8Q190t160lAfxzLyYiKcV$mIEoy7eQM0G6o0pA3sSchn1ORlkWh0HRaEpj/ULb6YA=",
@@ -68,30 +71,7 @@
             "is_active": true,
             "date_joined": "2023-09-14T15:48:52.536Z",
             "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "api.account",
-        "pk": 2,
-        "fields": {
-            "user": 2,
-            "tier": 1
-        }
-    },
-    {
-        "model": "api.account",
-        "pk": 3,
-        "fields": {
-            "user": 3,
-            "tier": 2
-        }
-    },
-    {
-        "model": "api.account",
-        "pk": 4,
-        "fields": {
-            "user": 4,
+            "user_permissions": [],
             "tier": 3
         }
     }

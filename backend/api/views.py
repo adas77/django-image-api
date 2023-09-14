@@ -1,21 +1,45 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+from .utils.upload import Uploader
 
-from .serializers import UploadSerializer
-
-# TODO: upload
+from .serializers import ImageSerializer
 
 
-class UploadViewSet(APIView):
+class ImageAPIView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = UploadSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    serializer_class = ImageSerializer
 
     def get(self, request):
-        return Response("GET")
+        user = request.user.uid
+        return Response(f'Hi {user}')
 
     def post(self, request):
-        file_uploaded = request.FILES.get('file_uploaded')
-        content_type = file_uploaded.content_type
-        response = f'POST:{content_type}'
-        return Response(response)
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            file_ = serializer.validated_data['file']
+            filename_content_type = file_.content_type
+
+            try:
+                Uploader.validate_extensions(filename_content_type)
+            except Exception as e:
+                return Response(
+                    str(e),
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            Uploader.handle_save_for_particular_tier(request.user, serializer)
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )

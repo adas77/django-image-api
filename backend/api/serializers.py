@@ -1,15 +1,8 @@
-from rest_framework.serializers import ModelSerializer, FileField
+from rest_framework.serializers import ModelSerializer
 from .models import Image
 
 
 class ImageSerializer(ModelSerializer):
     class Meta:
         model = Image
-        exclude = ('pkid',)
-
-
-class UploadSerializer(ModelSerializer):
-    file_uploaded = FileField()
-
-    class Meta:
-        fields = ['file_uploaded']
+        fields = ('file', 'uploaded_on')

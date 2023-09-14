@@ -1,12 +1,13 @@
+import os
+
 from django.db import models
 import uuid
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+from PIL import Image as PIL_Image
 
 
 class Tier(models.Model):
-    pkid = models.BigAutoField(primary_key=True, editable=False)
-    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-
     name = models.CharField(max_length=100, unique=True)
     thumbnail_size = models.PositiveIntegerField(default=200)
     thumbnail_size_bigger = models.PositiveIntegerField(null=True)
@@ -17,22 +18,39 @@ class Tier(models.Model):
         return self.name
 
 
-class Account(models.Model):
-    pkid = models.BigAutoField(primary_key=True, editable=False)
+class User(AbstractUser):
     uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    tier = models.OneToOneField(Tier, on_delete=models.CASCADE)
+    tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.user.username}:{self.tier.name}'
+        return f'{self.username}:{self.tier.name}'
 
 
 class Image(models.Model):
-    pkid = models.BigAutoField(primary_key=True, editable=False)
-    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    def upload_to(instance, filename):
+        _, extension = os.path.splitext(filename)
+        creator_uid = instance.creator.uid
+        file_uid = uuid.uuid4()
+        return f'{creator_uid}/{file_uid}{extension}'
 
-    name = models.CharField(max_length=100, unique=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    resize = models.PositiveIntegerField(null=True)
+    file = models.FileField(upload_to=upload_to)
+    uploaded_on = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = PIL_Image.open(self.file)
+        width, height = img.size
+        target_width = self.resize
+        h_coefficient = width/self.resize
+        target_height = height/h_coefficient
+        img = img.resize((int(target_width), int(
+            target_height)), PIL_Image.ANTIALIAS)
+        img.save(self.file.path, quality=100)
+        img.close()
+        self.file.close()
 
     def __str__(self):
-        return self.name
+        return self.uploaded_on
