@@ -1,11 +1,13 @@
+
+from rest_framework import status
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework import status
-from .utils.upload import Uploader
 
+from .models import Image
 from .serializers import ImageSerializer
+from .utils import Uploader
 
 
 class ImageAPIView(APIView):
@@ -14,8 +16,14 @@ class ImageAPIView(APIView):
     serializer_class = ImageSerializer
 
     def get(self, request):
-        user = request.user.uid
-        return Response(f'Hi {user}')
+        images = Image.objects.filter(creator=request.user.pk)
+        serializer = self.serializer_class(data=images, many=True)
+        # FIXME:
+        if serializer.is_valid():
+            print("ddd")
+        print(serializer.data)
+
+        return Response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -32,10 +40,11 @@ class ImageAPIView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            Uploader.handle_save_for_particular_tier(request.user, serializer)
+            data = Uploader.handle_save_for_particular_tier(
+                request.user, serializer)
 
             return Response(
-                serializer.data,
+                data,
                 status=status.HTTP_201_CREATED
             )
 

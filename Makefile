@@ -4,7 +4,10 @@ port = 8000
 super_user_name = admin
 super_user_email = admin@example.com
 super_user_password = fF1aqm18
+app = api
 
+sqlite = $(backend)/db.sqlite3
+migrations_dir = $(backend)/$(app)/migrations
 manage = ${backend}/manage.py
 fixture_accounts = ${backend}/api/fixtures/default_users.json
 fixture_tier = ${backend}/api/fixtures/default_tiers.json
@@ -23,10 +26,18 @@ u:
 	DJANGO_SUPERUSER_PASSWORD=${super_user_password} \
 	DJANGO_SUPERUSER_EMAIL=${super_user_email} \
 	${run} createsuperuser --noinput
+
 m-make:
 	$(run) makemigrations
 
 m-run:
 	$(run) migrate
 
+m-del:
+	rm -rf $(migrations_dir) $(sqlite)
+
+m-up:
+	$(run) makemigrations $(app)
+
 m: m-make m-run
+mm: m-del m-up m-run f

@@ -1,9 +1,9 @@
 import os
-
-from django.db import models
 import uuid
-from django.contrib.auth.models import AbstractUser
 
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.db import models
 from PIL import Image as PIL_Image
 
 
@@ -29,28 +29,38 @@ class User(AbstractUser):
 class Image(models.Model):
     def upload_to(instance, filename):
         _, extension = os.path.splitext(filename)
-        creator_uid = instance.creator.uid
+        # creator_uid = instance.creator.uid
         file_uid = uuid.uuid4()
-        return f'{creator_uid}/{file_uid}{extension}'
+        # FIXME: user/image or /image
+        return f'{file_uid}{extension}'
+        # return f'{creator_uid}/{file_uid}{extension}'
+
+    def validate_link_exp(value):
+        MIN = 300
+        MAX = 30_000
+        if value < MIN or value > MAX:
+            raise ValidationError(f'{value}s not between {MIN}s and {MAX}s')
 
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
-    resize = models.PositiveIntegerField(null=True)
-    file = models.FileField(upload_to=upload_to)
+    resize = models.PositiveIntegerField(null=True, default=None)
     uploaded_on = models.DateTimeField(auto_now_add=True)
+    expires = models.DateTimeField(null=True)
+    file = models.FileField(upload_to=upload_to)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
         img = PIL_Image.open(self.file)
-        width, height = img.size
-        target_width = self.resize
-        h_coefficient = width/self.resize
-        target_height = height/h_coefficient
-        img = img.resize((int(target_width), int(
-            target_height)), PIL_Image.ANTIALIAS)
+        if self.resize:
+            width, height = img.size
+            target_width = self.resize
+            h_coefficient = width/self.resize
+            target_height = height/h_coefficient
+            img = img.resize((int(target_width), int(
+                target_height)), PIL_Image.ANTIALIAS)
         img.save(self.file.path, quality=100)
         img.close()
         self.file.close()
 
     def __str__(self):
-        return self.uploaded_on
+        return f'{self.resize}'
