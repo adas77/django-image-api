@@ -14,7 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from api.models import Image
+from api.models import Link
 from django.conf import settings
 from django.contrib import admin
 from django.http import HttpResponseNotFound
@@ -26,14 +26,15 @@ from django.views.static import serve
 def protected_serve(request, path, document_root=None, show_indexes=False):
     REJECTED_REQUEST_MESSAGE = '404 Not Found'
     try:
-        image = Image.objects.get(file=path)
+        link = Link.objects.get(url=path)
+
     except:
         return HttpResponseNotFound(REJECTED_REQUEST_MESSAGE)
 
+    path = link.mediafile.name
     now = timezone.now()
-    if image.expires is not None and image.expires < now:
+    if link.expires is not None and link.expires < now:
         return HttpResponseNotFound(REJECTED_REQUEST_MESSAGE)
-
     return serve(request, path, document_root, show_indexes)
 
 

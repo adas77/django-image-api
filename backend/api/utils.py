@@ -1,8 +1,10 @@
-from .serializers import ImageSerializer
-from .models import User, Image
-from django.utils import timezone
 from datetime import timedelta
-from django.db.models import F
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils import timezone
+
+from .models import Image, User
+from .serializers import ImageSerializer
 
 
 class Uploader():
@@ -15,51 +17,35 @@ class Uploader():
                 f'Allowed extensions: {", ".join(Uploader.ALLOWED_EXTENSIONS)}')
 
     @staticmethod
-    def handle_save_for_particular_tier(user: User, serializer: ImageSerializer):
+    def handle_save_for_particular_tier(user: User, uploaded_file: InMemoryUploadedFile,
+                                        link_exp_seconds: int | None):
         tier = user.tier
-        data = serializer.validated_data
-        response = []
+        image = Image(creator=user, name=uploaded_file.name)
+        image.save()
 
-        def create_image_helper(describtion: str, resize: int = None, expires=None):
-            serializer = ImageSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save(creator=user, resize=resize,
-                                expires=expires)
-                response_data = serializer.data
-                response_data['description'] = describtion
-                response.append(response_data)
+        def create_link_helper(describtion: str, resize: int = None, expires=None):
+            image.link_set.create(
+                mediafile=uploaded_file, resize=resize, expires=expires)
 
-        create_image_helper(
+        create_link_helper(
             describtion=f'{tier.thumbnail_size} pixel height shortcut',
             resize=tier.thumbnail_size)
+
         if tier.thumbnail_size_bigger:
-            create_image_helper(
+            create_link_helper(
                 describtion=f'{tier.thumbnail_size_bigger} pixel height shortcut',
                 resize=tier.thumbnail_size_bigger)
 
         if tier.presence_of_link_to_og_file:
-            create_image_helper(describtion='Original size image')
+            create_link_helper(describtion='Original size image')
 
-        # FIXME:
-        MOCK_LINK_EXP = 333
-        link_exp_seconds = MOCK_LINK_EXP
-        if tier.ability_to_create_exp_link:
+        if tier.ability_to_create_exp_link and link_exp_seconds is not None:
             datetime_value = timezone.now() + timedelta(seconds=link_exp_seconds)
-            create_image_helper(
+            create_link_helper(
                 describtion=f'Original size image with {link_exp_seconds}s fetch lifetime',
                 expires=datetime_value)
 
-        return response
-
-
-class Downloader():
-    @staticmethod
-    def filter_images(creator: User = None):
-        images = Image.objects.filter(uploaded_on__le=F('expires'))
-        if creator:
-            images = images.filter(creator=creator)
-
-        serializer = ImageSerializer(data=images, many=True)
-        if serializer.is_valid():
-            return serializer.data
-        return serializer.data
+        serializer = ImageSerializer(instance=image)
+        image = serializer.data
+        print(image)
+        return image

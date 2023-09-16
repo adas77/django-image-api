@@ -19,7 +19,7 @@ f:
 	$(run) loaddata $(fixture_tier) $(fixture_accounts)
 
 r:
-	$(run) runserver 0.0.0.0:$(port)
+	$(run) runserver 127.0.0.1:$(port)
 
 u:
 	DJANGO_SUPERUSER_USERNAME=${super_user_name} \
