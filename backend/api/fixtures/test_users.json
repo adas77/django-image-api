@@ -3,7 +3,7 @@
         "model": "api.user",
         "pk": 2,
         "fields": {
-            "password": "pbkdf2_sha256$600000$6u5ag5c9L2TCqD1dYCD12q$NZgAg6Ossg0VOkbB2+b+5515EiDy/KruZFMA4msnE68=",
+            "password": "md5$wMDRAFEgm7b152GzarzsPa$866176d7794fde79053dff1b12b84b49",
             "last_login": null,
             "is_superuser": false,
             "username": "test_user___Basic",
@@ -22,7 +22,7 @@
         "model": "api.user",
         "pk": 3,
         "fields": {
-            "password": "pbkdf2_sha256$600000$SOnAY27nAHku7RzPPRVMJP$Tz9LiX1zYFgBjVUBJb0kVGzAGiB9ehvhYqPTK4e5kxM=",
+            "password": "md5$wMDRAFEgm7b152GzarzsPa$866176d7794fde79053dff1b12b84b49",
             "last_login": null,
             "is_superuser": false,
             "username": "test_user___Premium",
@@ -41,7 +41,7 @@
         "model": "api.user",
         "pk": 4,
         "fields": {
-            "password": "pbkdf2_sha256$600000$q8Q190t160lAfxzLyYiKcV$mIEoy7eQM0G6o0pA3sSchn1ORlkWh0HRaEpj/ULb6YA=",
+            "password": "md5$wMDRAFEgm7b152GzarzsPa$866176d7794fde79053dff1b12b84b49",
             "last_login": null,
             "is_superuser": false,
             "username": "test_user___Enterprise",

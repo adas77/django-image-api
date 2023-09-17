@@ -11,12 +11,13 @@ migrations_dir = $(backend)/$(app)/migrations
 manage = ${backend}/manage.py
 fixture_accounts = ${backend}/api/fixtures/default_users.json
 fixture_tier = ${backend}/api/fixtures/default_tiers.json
+fixture_admin = ${backend}/api/fixtures/admin.json
 
 run = $(py) $(manage)
 migrate_make = $(py) makemigrations
 
 f:
-	$(run) loaddata $(fixture_tier) $(fixture_accounts)
+	$(run) loaddata $(fixture_tier) $(fixture_accounts) $(fixture_admin)
 
 r:
 	$(run) runserver 127.0.0.1:$(port)
@@ -26,6 +27,9 @@ u:
 	DJANGO_SUPERUSER_PASSWORD=${super_user_password} \
 	DJANGO_SUPERUSER_EMAIL=${super_user_email} \
 	${run} createsuperuser --noinput
+
+t:
+	$(run) test $(app) --parallel
 
 m-make:
 	$(run) makemigrations

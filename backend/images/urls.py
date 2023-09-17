@@ -31,7 +31,7 @@ def protected_serve(request, path, document_root=None, show_indexes=False):
     except:
         return HttpResponseNotFound(REJECTED_REQUEST_MESSAGE)
 
-    path = link.mediafile.name
+    path = link.mediafile.mediafile.name
     now = timezone.now()
     if link.expires is not None and link.expires < now:
         return HttpResponseNotFound(REJECTED_REQUEST_MESSAGE)
@@ -42,5 +42,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     re_path(r'^%s(?P<path>.*)$' %
-            settings.MEDIA_URL[1:], protected_serve, {'document_root': settings.MEDIA_ROOT}),
+            settings.MEDIA_URL[1:], protected_serve, {'document_root': settings.MEDIA_ROOT}, name='mediafiles_api'),
 ]

@@ -28,10 +28,9 @@ class ImageAPIView(APIView):
                 f'Provide image to form-data with key: {settings.MEDIA_UPLOAD_KEY}',
                 status=status.HTTP_400_BAD_REQUEST
             )
-        content_type = uploaded_file.content_type
 
         try:
-            Uploader.validate_extensions(content_type)
+            Uploader.validate_extensions(uploaded_file)
         except Exception as e:
             return Response(
                 str(e),
@@ -44,7 +43,7 @@ class ImageAPIView(APIView):
         except:
             link_exp_seconds = None
 
-        if link_exp_seconds is not None and (link_exp_seconds < 300 or link_exp_seconds >= 30_000):
+        if link_exp_seconds is not None and (link_exp_seconds < 300 or link_exp_seconds > 30_000):
             return Response(
                 f'{link_exp_seconds}s not between {300}s and {30_000}s',
                 status=status.HTTP_400_BAD_REQUEST

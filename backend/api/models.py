@@ -34,37 +34,37 @@ class Image(models.Model):
         return f'{self.creator}-{self.name}:{self.uploaded_on}'
 
 
-class Link(models.Model):
+class UploadImage(models.Model):
     def upload_to(instance, filename):
         _, extension = os.path.splitext(filename)
         uid = uuid.uuid4()
         return f'{uid}{extension}'
 
     def save(self, *args, **kwargs):
-        # FIXME:
         super().save(*args, **kwargs)
-
-        if self.expires is not None:
-            return
-
         img = PIL_Image.open(self.mediafile)
         if self.resize:
             width, height = img.size
-            target_width = self.resize
-            h_coefficient = width/self.resize
-            target_height = height/h_coefficient
+            target_height = self.resize
+            w_coefficient = height / self.resize
+            target_width = width / w_coefficient
             img = img.resize((int(target_width), int(
                 target_height)), PIL_Image.ANTIALIAS)
+
         img.save(self.mediafile.path, quality=100)
         img.close()
         self.mediafile.close()
 
-    url = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     mediafile = models.FileField(upload_to=upload_to, unique=True)
     resize = models.PositiveIntegerField(null=True, default=None)
+
+
+class Link(models.Model):
+    url = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     expires = models.DateTimeField(null=True, default=None)
 
     image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    mediafile = models.ForeignKey(UploadImage, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'mediafile:{self.mediafile}\nurl:{self.url}\nuploaded:{self.uploaded_on}\nexpires:{self.expires}'
+        return f'mediafile:{self.mediafile.mediafile}\nurl:{self.url}\nexpires:{self.expires}'
