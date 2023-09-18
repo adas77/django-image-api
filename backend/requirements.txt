@@ -1,4 +1,6 @@
-django
-djangorestframework
-djangorestframework_simplejwt
-Faker
+django==4.2.5
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.0
+Faker==19.6.1
+Pillow==9.5.0
+python-dotenv==1.0.0

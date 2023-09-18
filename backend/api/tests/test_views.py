@@ -1,3 +1,7 @@
+from django.utils import timezone
+
+from api.models import Tier
+
 from .test_setup import TestSetUp
 
 
@@ -76,15 +80,15 @@ class TestViews(TestSetUp):
                 user, valid_exp_second)
             self.assertEqual(can_fetch_expire, can_fetch_expire_should_be)
 
-        helper(self.user_tier_basic, False)
-        helper(self.user_tier_premium, False)
+        helper(self.user_tier_basic, None)
+        helper(self.user_tier_premium, None)
 
     def test_user_cannot_fetch_expiring_link_passing_incorrect_time(self):
         def helper(valid_exp_second):
             user_with_priv = self.user_tier_enterprise
             can_fetch_expire = self.helper_get_expiring_link(
                 user_with_priv, valid_exp_second)
-            self.assertEqual(can_fetch_expire, False)
+            self.assertEqual(can_fetch_expire, None)
 
         helper(299)
         helper(30_001)
@@ -111,9 +115,65 @@ class TestViews(TestSetUp):
             user_with_priv = self.user_tier_enterprise
             can_fetch_expire = self.helper_get_expiring_link(
                 user_with_priv, valid_exp_second)
-            self.assertEqual(can_fetch_expire, True)
+            self.assertIsNotNone(can_fetch_expire)
 
         helper(300)
         helper(301)
         helper(29_999)
         helper(30_000)
+
+    def test_after_upload_user_get_correct_image_thumbnail_hitting_returned_links(self):
+        def helper(user):
+            res = self.helper_upload_image(
+                self.valid_image, user)
+            links = res.data.get('links', None)
+            for link in links:
+                url = link.get('url', None)
+                height = link.get('resize', None)
+                res_media = self.client.get(url)
+                self.helper_compare_uploaded_image_with_image_got_by_url(
+                    self.valid_image, res_media, compare_height_value=height)
+
+        helper(self.user_tier_basic)
+        helper(self.user_tier_premium)
+        helper(self.user_tier_enterprise)
+
+    def test_user_cannot_get_image_when_link_expired(self):
+        def past_date(secs):
+            now = timezone.now()
+            return now + timezone.timedelta(seconds=secs)
+
+        self.helper_mock_expiring_link_and_hit_endpoint(
+            past_date(-1), response_status_code_should_be=404)
+
+        self.helper_mock_expiring_link_and_hit_endpoint(
+            past_date(0), response_status_code_should_be=404)
+
+    def test_user_can_get_image_when_link_not_expired(self):
+        def past_date(secs):
+            now = timezone.now()
+            return now + timezone.timedelta(seconds=secs)
+
+        self.helper_mock_expiring_link_and_hit_endpoint(
+            past_date(1), response_status_code_should_be=200)
+
+    def test_user_with_custom_tier_get_correct_links(self):
+        thumbnail_size = 468
+        thumbnail_size_bigger = 789
+        custom_tier = Tier(name=f'{self.faker.name()} Tier',
+                           thumbnail_size=thumbnail_size,
+                           thumbnail_size_bigger=thumbnail_size_bigger,
+                           presence_of_link_to_og_file=True,
+                           ability_to_create_exp_link=True)
+        custom_tier.save()
+        user = self.user_tier_basic
+        user.tier = custom_tier
+        user.save()
+
+        res = self.helper_upload_image(self.valid_image, user, 15_000)
+        links = res.data.get('links', None)
+
+        self.assertEqual(links[0].get('resize', None), thumbnail_size)
+        self.assertEqual(links[1].get('resize', None), thumbnail_size_bigger)
+        self.assertEqual(links[2].get('resize', None), None)
+        self.assertIsNotNone(links[3].get('expires', None))

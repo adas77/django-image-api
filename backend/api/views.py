@@ -16,8 +16,8 @@ class ImageAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request):
-        # TODO: Also filter expired here?
-        images = Image.objects.filter(creator=request.user.pk)
+        images = Image.objects.filter(
+            creator=request.user.pk)
         serializer = ImageSerializer(instance=images, many=True)
         return Response(serializer.data)
 

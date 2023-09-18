@@ -1,0 +1,388 @@
+{
+	"info": {
+		"_postman_id": "8a18fede-8eb6-436e-bd23-93c103662832",
+		"name": "drf_images_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"fF1aqm18\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/token/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "token_refresh",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "refresh",
+							"value": "{{rt}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/token/refresh/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"token",
+						"refresh",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "token Basic",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test_user___Basic\",\n    \"password\": \"fF1aqm18\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/token/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "token Premium",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test_user___Premium\",\n    \"password\": \"fF1aqm18\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/token/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "token Enterprise",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"test_user___Enterprise\",\n    \"password\": \"fF1aqm18\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/token/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload wrong extension",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{tb}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "{{file_key}}",
+							"type": "file",
+							"src": "/home/adam/Pictures/test/img.gif"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/images/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"images",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload Basic",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{tb}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "{{file_key}}",
+							"type": "file",
+							"src": "/home/adam/Pictures/test/img.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/images/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"images",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Basic",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{tb}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "{{file_key}}",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/images/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"images",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload Premium",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{tp}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "{{file_key}}",
+							"type": "file",
+							"src": "/home/adam/Pictures/test/img.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/images/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"images",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Premium",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{tp}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "{{file_key}}",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/images/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"images",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload Enterprise",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{te}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "{{file_key}}",
+							"type": "file",
+							"src": "/home/adam/Pictures/test/img.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/images/?exp=300",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"images",
+						""
+					],
+					"query": [
+						{
+							"key": "exp",
+							"value": "300"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Enterprise",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{te}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api}}/images/",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"images",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

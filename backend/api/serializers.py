@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django.conf import settings
+from django.utils import timezone
 from rest_framework.serializers import ModelSerializer
 
 from .models import Image, Link, UploadImage
@@ -24,19 +25,15 @@ class LinkSerializer(ModelSerializer):
         fields = ('url', 'expires', 'mediafile')
 
     def to_representation(self, instance):
-        # FIXME: delete mock
-        MOCK_HOST = 'http://127.0.0.1:8000/media/'
-        if settings.DEBUG:
-            import sys
-            MOCK_HOST = f'http://{sys.argv[-1]}{settings.MEDIA_URL[:-1]}'
-        host = MOCK_HOST
-
         result = super(LinkSerializer, self).to_representation(instance)
-        result['url'] = f'{host}/{result["url"]}'
 
+        if instance.expires and instance.expires < timezone.now():
+            return {}
+
+        host = f'http://{settings.HOST}:{settings.PORT}{settings.MEDIA_URL[:-1]}'
+        result['url'] = f'{host}/{result["url"]}'
         result['resize'] = result.pop(
             'mediafile', None).pop('resize', None)
-
         return OrderedDict([(key, result[key]) for key in result if result[key] is not None])
 
 
