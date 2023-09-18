@@ -22,7 +22,7 @@ class User(AbstractUser):
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.username}:{self.tier.name}'
+        return f"{self.username}:{self.tier.name}"
 
 
 class Image(models.Model):
@@ -31,14 +31,14 @@ class Image(models.Model):
     uploaded_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.creator}-{self.name}:{self.uploaded_on}'
+        return f"{self.creator}-{self.name}:{self.uploaded_on}"
 
 
 class UploadImage(models.Model):
     def upload_to(instance, filename):
         _, extension = os.path.splitext(filename)
         uid = uuid.uuid4()
-        return f'{uid}{extension}'
+        return f"{uid}{extension}"
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -48,8 +48,9 @@ class UploadImage(models.Model):
             target_height = self.resize
             w_coefficient = height / self.resize
             target_width = width / w_coefficient
-            img = img.resize((int(target_width), int(
-                target_height)), PIL_Image.ANTIALIAS)
+            img = img.resize(
+                (int(target_width), int(target_height)), PIL_Image.ANTIALIAS
+            )
 
         img.save(self.mediafile.path, quality=100)
         img.close()
@@ -67,4 +68,4 @@ class Link(models.Model):
     mediafile = models.ForeignKey(UploadImage, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'mediafile:{self.mediafile.mediafile}\nurl:{self.url}\nexpires:{self.expires}'
+        return f"mediafile:{self.mediafile.mediafile}\nurl:{self.url}\nexpires:{self.expires}"

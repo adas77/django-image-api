@@ -10,11 +10,13 @@ from .models import Image, Link, UploadImage
 class UploadImageSerializer(ModelSerializer):
     class Meta:
         model = UploadImage
-        fields = ('resize',)
+        fields = ("resize",)
 
     def to_representation(self, instance):
         result = super(UploadImageSerializer, self).to_representation(instance)
-        return OrderedDict([(key, result[key]) for key in result if result[key] is not None])
+        return OrderedDict(
+            [(key, result[key]) for key in result if result[key] is not None]
+        )
 
 
 class LinkSerializer(ModelSerializer):
@@ -22,7 +24,7 @@ class LinkSerializer(ModelSerializer):
 
     class Meta:
         model = Link
-        fields = ('url', 'expires', 'mediafile')
+        fields = ("url", "expires", "mediafile")
 
     def to_representation(self, instance):
         result = super(LinkSerializer, self).to_representation(instance)
@@ -30,20 +32,23 @@ class LinkSerializer(ModelSerializer):
         if instance.expires and instance.expires < timezone.now():
             return {}
 
-        host = f'http://{settings.HOST}:{settings.PORT}{settings.MEDIA_URL[:-1]}'
-        result['url'] = f'{host}/{result["url"]}'
-        result['resize'] = result.pop(
-            'mediafile', None).pop('resize', None)
-        return OrderedDict([(key, result[key]) for key in result if result[key] is not None])
+        host = f"http://{settings.HOST}:{settings.PORT}{settings.MEDIA_URL[:-1]}"
+        result["url"] = f'{host}/{result["url"]}'
+        result["resize"] = result.pop("mediafile", None).pop("resize", None)
+        return OrderedDict(
+            [(key, result[key]) for key in result if result[key] is not None]
+        )
 
 
 class ImageSerializer(ModelSerializer):
-    links = LinkSerializer(source='link_set', many=True)
+    links = LinkSerializer(source="link_set", many=True)
 
     class Meta:
         model = Image
-        fields = ('name', 'uploaded_on', 'links')
+        fields = ("name", "uploaded_on", "links")
 
     def to_representation(self, instance):
         result = super(ImageSerializer, self).to_representation(instance)
-        return OrderedDict([(key, result[key]) for key in result if result[key] is not None])
+        return OrderedDict(
+            [(key, result[key]) for key in result if result[key] is not None]
+        )

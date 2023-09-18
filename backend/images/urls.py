@@ -24,7 +24,7 @@ from django.views.static import serve
 
 
 def protected_serve(request, path, document_root=None, show_indexes=False):
-    REJECTED_REQUEST_MESSAGE = '404 Not Found'
+    REJECTED_REQUEST_MESSAGE = "404 Not Found"
     try:
         link = Link.objects.get(url=path)
 
@@ -39,8 +39,12 @@ def protected_serve(request, path, document_root=None, show_indexes=False):
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
-    re_path(r'^%s(?P<path>.*)$' %
-            settings.MEDIA_URL[1:], protected_serve, {'document_root': settings.MEDIA_ROOT}, name='mediafiles_api'),
+    path("admin/", admin.site.urls),
+    path("api/", include("api.urls")),
+    re_path(
+        r"^%s(?P<path>.*)$" % settings.MEDIA_URL[1:],
+        protected_serve,
+        {"document_root": settings.MEDIA_ROOT},
+        name="mediafiles_api",
+    ),
 ]
