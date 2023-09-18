@@ -44,7 +44,7 @@ python3 backend/manage.py runserver 127.0.0.1:8000
 ## Docker (Container needs to be running)
 
 ```bash
-npm d-test
+make d-test
 ```
 
 or
