@@ -35,7 +35,7 @@ make r
 or
 
 ```bash
-
+python3 backend/manage.py migrate
 python3 backend/manage.py loaddata backend/api/fixtures/default_tiers.json backend/api/fixtures/default_users.json backend/api/fixtures/admin.json
 python3 backend/manage.py runserver 127.0.0.1:8000
 ```
