@@ -27,6 +27,7 @@ pip install -r backend/requirements.txt
 ### Run
 
 ```bash
+python3 backend/manage.py migrate
 make f
 make r
 ```
